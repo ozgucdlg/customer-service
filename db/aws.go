@@ -1,12 +1,8 @@
 package db
 
-
-// Use this code snippet in your app.
-// If you need more information about configurations or implementing the sample code, visit the AWS docs:   
-// https://aws.github.io/aws-sdk-go-v2/docs/getting-started/
-
 import (
 	"context"
+	"encoding/json"
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -14,9 +10,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
 
-func main() {
+func GetSecretValue() map[string]string {
 	secretName := "rds!db-a03216f1-02c7-4aa9-b386-cc635a24ff7e"
-	region := "ca-central-1"
+	region := "eu-central-1"
 
 	config, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
 	if err != nil {
@@ -39,7 +35,8 @@ func main() {
 	}
 
 	// Decrypts secret using the associated KMS key.
-	var secretString string = *result.SecretString
+	var secretMap map[string]string
+	json.Unmarshal([]byte(*result.SecretString), &secretMap)
 
-	// Your code goes here.
+	return secretMap
 }
